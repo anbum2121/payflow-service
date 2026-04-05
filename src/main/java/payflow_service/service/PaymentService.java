@@ -2,6 +2,7 @@ package payflow_service.service;
 
 import payflow_service.dto.PaymentRequest;
 import payflow_service.dto.PaymentResponse;
+import payflow_service.kafka.PaymentEventProducer;
 import payflow_service.model.Payment;
 import payflow_service.model.PaymentStatus;
 import payflow_service.repository.PaymentRepository;
@@ -18,10 +19,11 @@ import java.util.Optional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentEventProducer paymentEventProducer;
 
     public PaymentResponse initiatePayment(PaymentRequest request) {
 
-        // Idempotency check — if same key exists, return existing payment
+        // Idempotency check
         Optional<Payment> existing = paymentRepository
                 .findByIdempotencyKey(request.getIdempotencyKey());
 
@@ -45,7 +47,11 @@ public class PaymentService {
         Payment saved = paymentRepository.save(payment);
         log.info("Payment initiated successfully with id: {}", saved.getId());
 
-        return mapToResponse(saved);
+        // Publish Kafka event
+        PaymentResponse response = mapToResponse(saved);
+        paymentEventProducer.sendPaymentEvent(response);
+
+        return response;
     }
 
     public PaymentResponse getPaymentById(Long id) {
