@@ -122,21 +122,15 @@ GET http://localhost:8080/api/v1/payments/{id}
 
 
 
-\- Idempotency Pattern — safe retries without duplicate processing
-
-\- Event-Driven Architecture — decoupled services via Kafka
-
-\- Velocity Check — real-time fraud detection
-
-\- Repository Pattern — clean data access layer
-
-\- Builder Pattern — via Lombok @Builder
+Idempotency Pattern — safe retries without duplicate processing
+Event-Driven Architecture — decoupled services via Kafka
+Velocity Check — real-time fraud detection
+Repository Pattern — clean data access layer
+Builder Pattern — via Lombok @Builder
 
 
 
 \## Author
-
-
 
 Anbalagan M — Java Backend Developer
 
