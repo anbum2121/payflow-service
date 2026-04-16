@@ -1,138 +1,72 @@
-\# PayFlow — Payment Processing System
-
-
+# PayFlow — Payment Processing System
 
 A production-grade payment processing system built with Java, Spring Boot, and Apache Kafka — inspired by real-world fintech systems like PayPal and Razorpay.
 
-
-
-\## Architecture
-
-
+## Architecture
 
 Client → API Gateway → Payment Service → H2 Database
+                              ↓
+                         Apache Kafka
+                    ↙         ↓          ↘
+            Ledger       Notification   Fraud
+            Service       Service      Detection
 
-&#x20;                             ↓
+## Tech Stack
 
-&#x20;                        Apache Kafka
+- Java 23 + Spring Boot 3.2.5
+- Apache Kafka — async event streaming
+- Spring Data JPA + H2 Database
+- Lombok — boilerplate reduction
+- Docker — containerized Kafka + Zookeeper
+- Maven — build tool
 
-&#x20;                   ↙         ↓          ↘
+## Key Features
 
-&#x20;           Ledger       Notification   Fraud
+- REST API for payment initiation and retrieval
+- Idempotency key protection — prevents duplicate payments
+- Kafka event streaming — payment events published and consumed asynchronously
+- Fraud detection — velocity check (blocks sender after 3 payments per minute)
+- Notification service — payment success and fraud alerts
 
-&#x20;           Service       Service      Detection
+## Getting Started
 
+### Prerequisites
+- Java 23+
+- Maven 3.9+
+- Docker Desktop
 
-
-\## Tech Stack
-
-
-
-\- Java 23 + Spring Boot 3.2.5
-
-\- Apache Kafka — async event streaming
-
-\- Spring Data JPA + H2 Database
-
-\- Lombok — boilerplate reduction
-
-\- Docker — containerized Kafka + Zookeeper
-
-\- Maven — build tool
-
-
-
-\## Key Features
-
-
-
-\- REST API for payment initiation and retrieval
-
-\- Idempotency key protection — prevents duplicate payments
-
-\- Kafka event streaming — payment events published and consumed asynchronously
-
-\- Fraud detection — velocity check (blocks sender after 3 payments per minute)
-
-\- Notification service — payment success and fraud alerts
-
-
-
-\## Getting Started
-
-
-
-\### Prerequisites
-
-\- Java 23+
-
-\- Maven 3.9+
-
-\- Docker Desktop
-
-
-
-\### Run Kafka
-
+### Run Kafka
 docker compose up -d
 
-
-
-\### Run the Application
-
+### Run the Application
 mvn spring-boot:run
 
-
-
-\### API Endpoints
-
-
+### API Endpoints
 
 Create Payment
-
 POST http://localhost:8080/api/v1/payments
 
-
-
 Body:
-
 {
-
-&#x20;   "senderId": "user\_001",
-
-&#x20;   "receiverId": "user\_002",
-
-&#x20;   "amount": 500.00,
-
-&#x20;   "currency": "INR",
-
-&#x20;   "idempotencyKey": "txn\_001"
-
+    "senderId": "user_001",
+    "receiverId": "user_002",
+    "amount": 500.00,
+    "currency": "INR",
+    "idempotencyKey": "txn_001"
 }
 
-
-
 Get Payment
-
 GET http://localhost:8080/api/v1/payments/{id}
 
+## Design Patterns Used
 
+- Idempotency Pattern — safe retries without duplicate processing
+- Event-Driven Architecture — decoupled services via Kafka
+- Velocity Check — real-time fraud detection
+- Repository Pattern — clean data access layer
+- Builder Pattern — via Lombok @Builder
 
-\## Design Patterns Used
-
-
-
-Idempotency Pattern — safe retries without duplicate processing
-Event-Driven Architecture — decoupled services via Kafka
-Velocity Check — real-time fraud detection
-Repository Pattern — clean data access layer
-Builder Pattern — via Lombok @Builder
-
-
-
-\## Author
+## Author
 
 Anbalagan M — Java Backend Developer
-
 GitHub: https://github.com/anbum2121
-
